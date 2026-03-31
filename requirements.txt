@@ -1,0 +1,7 @@
+playwright
+beautifulsoup4
+sqlalchemy
+fastapi
+uvicorn
+jinja2
+pytz

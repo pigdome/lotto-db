@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="light" lang="th">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>THE GOLDEN LEDGER | Statistics</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                colors: {
+                  "primary": "#000666",
+                  "background": "#fbf8ff",
+                  "surface-container-lowest": "#ffffff",
+                  "surface-container-low": "#f5f2fb",
+                  "primary-fixed": "#e0e0ff",
+                  "secondary-container": "#fed65b",
+                  "on-secondary-container": "#745c00",
+                  "tertiary-fixed-dim": "#88d982",
+                  "outline-variant": "#c6c5d4"
+                },
+                fontFamily: {
+                  "headline": ["Be Vietnam Pro"],
+                  "body": ["Plus Jakarta Sans"]
+                }
+              }
+            }
+          }
+    </script>
+</head>
+<body class="bg-background font-body text-slate-900">
+    <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 h-16 border-b border-outline-variant/20">
+        <div class="flex items-center gap-4">
+            <a href="/" class="material-symbols-outlined text-primary">arrow_back</a>
+            <h1 class="text-lg font-black tracking-widest text-primary font-headline uppercase">ภาพรวมข้อมูล</h1>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-24 px-4 max-w-4xl mx-auto space-y-8">
+        <section>
+            <h2 class="text-3xl font-black text-primary font-headline tracking-tight">วิเคราะห์สถิติ</h2>
+            <p class="text-sm text-slate-500">ข้อมูลจาก 100 งวดล่าสุดในระบบ</p>
+        </section>
+
+        <!-- Hot Numbers Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-primary text-white rounded-[2rem] p-8 relative overflow-hidden shadow-xl">
+                <div class="relative z-10">
+                    <h3 class="text-xl font-black font-headline mb-6">TOP 5 เลขท้าย 2 ตัว<br>ที่ออกบ่อยที่สุด</h3>
+                    <div class="space-y-4">
+                        {% for num, count in hot_numbers %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <span class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-black text-lg">{{ num }}</span>
+                                <div class="h-2 bg-secondary-container rounded-full" style="width: {{ count * 20 }}px"></div>
+                            </div>
+                            <span class="text-xs font-bold text-white/60">{{ count }} ครั้ง</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[12rem] opacity-10">trending_up</span>
+            </div>
+
+            <div class="bg-surface-container-low rounded-[2rem] p-8 border border-outline-variant/10">
+                <h3 class="text-xl font-bold text-primary font-headline mb-4">สรุปภาพรวม</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    จากการวิเคราะห์ข้อมูลย้อนหลัง พบว่าตัวเลขในกลุ่ม <b>"เลขท้าย 2 ตัว"</b> มีการกระจายตัวค่อนข้างสูง 
+                    อย่างไรก็ตาม กลุ่มตัวเลขที่ปรากฏบ่อยที่สุดคือ {{ hot_numbers[0][0] if hot_numbers else 'N/A' }} 
+                    ซึ่งออกไปทั้งหมด {{ hot_numbers[0][1] if hot_numbers else '0' }} ครั้ง
+                </p>
+                <div class="p-4 bg-white rounded-2xl border border-outline-variant/5">
+                    <div class="flex items-center gap-3 text-primary mb-2">
+                        <span class="material-symbols-outlined">lightbulb</span>
+                        <span class="font-bold text-sm">ข้อแนะนำจากระบบ</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 italic">"สถิติเป็นเพียงการนำเสนอข้อมูลย้อนหลัง ไม่สามารถการันตีผลลัพธ์ในอนาคตได้ โปรดใช้วิจารณญาณ"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data table teaser -->
+        <section class="bg-surface-container-lowest rounded-[2rem] p-6 border border-outline-variant/10">
+            <h4 class="font-bold text-primary mb-4">งวดล่าสุดที่มีข้อมูลสถิติ</h4>
+            <div class="space-y-3">
+                {% for r in results[:5] %}
+                <div class="flex items-center justify-between py-2 border-b border-outline-variant/5">
+                    <span class="text-xs font-bold text-slate-600">{{ r.type }} - {{ r.draw_date.strftime('%d/%m/%Y') }}</span>
+                    <span class="text-sm font-black text-primary">{{ r.prizes.get('รางวัลที่หนึ่ง', '---') }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="/history" class="block w-full text-center mt-6 text-xs font-bold text-slate-400 hover:text-primary transition-colors">ดูข้อมูลทั้งหมดใน Archive ↗</a>
+        </section>
+    </main>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-4 pb-safe bg-white/80 backdrop-blur-md z-50 border-t border-outline-variant/20">
+        <a href="/" class="flex flex-col items-center justify-center text-slate-500">
+            <span class="material-symbols-outlined mb-1">home</span>
+            <span class="text-[10px] font-semibold uppercase">หน้าแรก</span>
+        </a>
+        <a href="/history" class="flex flex-col items-center justify-center text-slate-500">
+            <span class="material-symbols-outlined mb-1">history</span>
+            <span class="text-[10px] font-semibold uppercase">ประวัติ</span>
+        </a>
+        <a href="/statistics" class="flex flex-col items-center justify-center text-primary">
+            <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">analytics</span>
+            <span class="text-[10px] font-semibold uppercase">สถิติ</span>
+        </a>
+        <a href="https://www.sanook.com/news/lotto/" target="_blank" class="flex flex-col items-center justify-center text-slate-500">
+            <span class="material-symbols-outlined mb-1">notifications</span>
+            <span class="text-[10px] font-semibold uppercase">ข่าวสาร</span>
+        </a>
+    </nav>
+</body>
+</html>

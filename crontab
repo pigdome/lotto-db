@@ -1,0 +1,6 @@
+# /srv/letmefix/scrapper/crontab
+PATH=/usr/local/bin:/usr/bin:/bin
+SHELL=/bin/bash
+
+# Run every 5 minutes and log the output
+*/5 * * * * cd /app && python3 scrape_lotto.py >> /var/log/cron.log 2>&1

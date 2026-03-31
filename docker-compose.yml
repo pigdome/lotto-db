@@ -1,0 +1,24 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
+    restart: always
+    environment:
+      - COUNTDOWN_THRESHOLD_MINUTES=10080
+
+  worker:
+    build: .
+    volumes:
+      - .:/app
+    command: >
+      sh -c "cp crontab /etc/cron.d/lotto-cron && 
+             chmod 0644 /etc/cron.d/lotto-cron && 
+             crontab /etc/cron.d/lotto-cron && 
+             touch /var/log/cron.log && 
+             cron && 
+             tail -f /var/log/cron.log"
+    restart: always
